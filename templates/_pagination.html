@@ -1,0 +1,22 @@
+
+<div class="col-xs-12">
+<ul class="pagination">
+
+<li><span>Total rows {{.Pagnt.RwsTot}} </span></li>
+<li><span class=""> Page {{.Pagnt.PgCurr}} of {{.Pagnt.PgLast}}</span></li>
+<li class="{{if (le .Pagnt.PgCurr 1)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgPrev}}"><span>Previous</span></a></li>
+<li class="{{if (le .Pagnt.PgOne 0)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgOne}}"><span>{{.Pagnt.PgOne}}</span></a></li>
+<li class="{{if (le .Pagnt.PgTwo 0)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgTwo}}"><span>{{.Pagnt.PgTwo}}</span></a></li>
+<li class="active"><span> {{.Pagnt.PgThree}} </span></li>
+<li class="{{if (gt .Pagnt.PgFour .Pagnt.PgLast)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgFour}}"><span> {{.Pagnt.PgFour}}</span></a></li>
+<li class="{{if (gt .Pagnt.PgFive .Pagnt.PgLast)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgFive}}"><span> {{.Pagnt.PgFive}} </span></a></li>
+<li class="{{if (gt .Pagnt.PgNext .Pagnt.PgLast)}}hidden{{end}}"
+    ><a href="{{.Pagnt.PgURL}}/p/{{.Pagnt.PgNext}}"><span>Next</span></a></li>
+
+</ul>
+</div>

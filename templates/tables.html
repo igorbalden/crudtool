@@ -1,0 +1,49 @@
+{{template "_head.html" .}}
+{{$dbname := .dbname}}
+{{$conK := -1}}
+{{$tolow := .funcs.ToLow}}
+
+<div class="container">
+<div>
+    <h3>
+        {{if (eq .Navigation "listTables")}}{{$dbname}} tables 
+        {{else if (eq .Navigation "tblContent")}}
+        Database <a href="/dbname/{{$dbname}}">{{$dbname}}</a> - Table {{.dbtable}} 
+        {{end}}
+    </h3>
+</div>
+            
+{{template "_pagination.html" .}}
+
+<table class="table table-responsive table-hover table-striped table-condensed">
+    <thead><tr>
+        {{range $hk, $hvalue := .ColNames}}
+        {{if (eq (call $tolow $hvalue) "table_name")}}{{$conK = $hk}}{{end}}
+        <th>
+            {{$hvalue}} 
+        </th>
+        {{end}}
+        </tr></thead>
+    <tbody>
+        {{range $bk, $bvalue := .ShData}}
+        <tr>
+            {{range $k, $v := $bvalue}}
+            <td>
+                {{if (eq $k $conK)}}
+                <a href="/dbtable/{{$v}}/dbname/{{$dbname}}">{{$v}}</a>
+                {{else}}
+                {{$v}}
+                {{end}}
+            </td>
+            {{end}}
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+
+{{template "_pagination.html" .}}
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+
+{{template "_head.html" .}}
+{{$conK := -1}}
+{{$tolow := .funcs.ToLow}}
+
+<div class="container">
+
+{{template "_pagination.html" .}}
+
+<table class="table table-responsive table-hover table-striped table-condensed">
+    <thead><tr>
+        {{range $hk, $hvalue := .ColNames}}
+        {{if (eq (call $tolow $hvalue) "schema_name")}}{{$conK = $hk}}{{end}}
+        <th>
+            {{$hvalue}} 
+        </th>
+        {{end}}
+        </tr></thead>
+    <tbody>
+        {{range $bk, $bvalue := .ShData}}
+        <tr>
+            {{range $k, $v := $bvalue}}
+            <td>
+                {{if (eq $k $conK)}}
+                <a href="/dbname/{{$v}}">{{$v}}</a>
+                {{else}}
+                {{$v}}
+                {{end}}
+            </td>
+            {{end}}
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+
+{{template "_pagination.html" .}}
+
+</div>
+
+</body>
+
+</html>
