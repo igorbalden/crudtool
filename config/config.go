@@ -6,28 +6,47 @@ import (
 	"log"
 )
 
-//Configuration Stores the main configuration for the application
+/*
+	Configuration Stores some default values for the application
+	Set desired values in ./config.json
+*/
 type Configuration struct {
-	ServerPort   string
-	Wait         string
-	WriteTimeout string
-	ReadTimeout  string
-	IdleTimeout  string
+	//SrvServerPort define listening port
+	SrvServerPort string
+	//SrvWait context  config.
+	//The duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
+	SrvWait string
+	//SrvWriteTimeout http.Server config
+	//is the maximum duration before timing out writes of the response
+	SrvWriteTimeout string
+	//SrvReadTimeout http.Server config
+	//is the maximum duration for reading the entire request, including the body
+	SrvReadTimeout string
+	//SrvIdleTimeout http.Server config
+	//is the maximum amount of time to wait for the next request when keep-alives are enabled.
+	SrvIdleTimeout string
+	//SessGclifetime session time out. In seconds.
+	SessGclifetime int64
 }
 
-var config Configuration
+//Config holds configuration default values
+var Config Configuration
 
-//ReadConfig will read the configuration json file
-func ReadConfig(fileName string) (Configuration, error) {
+func init() {
+	Config = readConfig("./config/config.json")
+}
+
+//readConfig will read the configuration json file
+func readConfig(fileName string) Configuration {
 	configFile, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Print("Unable to read config file, switching to flag mode")
-		return Configuration{}, err
+		return Configuration{}
 	}
-	err = json.Unmarshal(configFile, &config)
+	err = json.Unmarshal(configFile, &Config)
 	if err != nil {
 		log.Print("Invalid JSON, expecting port from command line flag")
-		return Configuration{}, err
+		return Configuration{}
 	}
-	return config, nil
+	return Config
 }

@@ -2,6 +2,7 @@ package ibsession
 
 import (
 	"github.com/astaxie/beego/session"
+	"github.com/igorbalden/crudtool/config"
 	"net/http"
 )
 
@@ -10,10 +11,11 @@ var GlobalSessions *session.Manager
 var mConf *session.ManagerConfig
 
 func init() {
+	defValues := config.Config
 	mConf = new(session.ManagerConfig)
 	mConf.CookieName = "gosessionid"
 	mConf.EnableSetCookie = true
-	mConf.Gclifetime = 600
+	mConf.Gclifetime = defValues.SessGclifetime
 	GlobalSessions, _ = session.NewManager("memory", mConf)
 	go GlobalSessions.GC()
 }
