@@ -146,6 +146,9 @@ func SetPagnt(r *http.Request, FchData *DbData) {
 		page = curPg
 	}
 	ptot := FchData.Pagnt.RwsTot / Limit
+	if FchData.Pagnt.RwsTot%Limit > 0 {
+		ptot++
+	}
 	url := r.RequestURI
 	if strings.Index(url, "/p/") > -1 {
 		FchData.Pagnt.PgURL = url[:strings.Index(url, "/p/")]
@@ -161,6 +164,6 @@ func SetPagnt(r *http.Request, FchData *DbData) {
 	FchData.Pagnt.PgThree = page
 	FchData.Pagnt.PgFour = page + 1
 	FchData.Pagnt.PgFive = page + 2
-	FchData.Pagnt.PgLast = ptot + 1
+	FchData.Pagnt.PgLast = ptot
 	return
 }

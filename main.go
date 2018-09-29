@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	values, _ := config.ReadConfig("./config/config.json")
+	defValues := config.Config
 	var port *string
 
 	// port number from cli -port flag
@@ -33,10 +33,10 @@ func main() {
 		if !strings.HasPrefix(*port, ":") {
 			*port = ":" + *port
 		}
-		values.ServerPort = *port
+		defValues.SrvServerPort = *port
 	}
 
-	if values.ServerPort == "" {
+	if defValues.SrvServerPort == "" {
 		log.Print(`A server port number is needed in config.json 
 			or as a command line flag "-port" `)
 		os.Exit(1)
@@ -63,12 +63,12 @@ func main() {
 	rt.Handle("/favicon.ico", http.FileServer(http.Dir("public")))
 
 	// Serve
-	wait, _ := time.ParseDuration(values.Wait)
-	wTime, _ := time.ParseDuration(values.WriteTimeout)
-	rTime, _ := time.ParseDuration(values.ReadTimeout)
-	iTime, _ := time.ParseDuration(values.IdleTimeout)
+	wait, _ := time.ParseDuration(defValues.SrvWait)
+	wTime, _ := time.ParseDuration(defValues.SrvWriteTimeout)
+	rTime, _ := time.ParseDuration(defValues.SrvReadTimeout)
+	iTime, _ := time.ParseDuration(defValues.SrvIdleTimeout)
 	srv := &http.Server{
-		Addr: values.ServerPort,
+		Addr: defValues.SrvServerPort,
 		// Good practice to set timeouts to avoid Slowloris attacks.
 		WriteTimeout: wTime,
 		ReadTimeout:  rTime,
@@ -78,7 +78,7 @@ func main() {
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
-		log.Print("Running on port ", values.ServerPort)
+		log.Print("Running on port ", defValues.SrvServerPort)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Println(err)
 		}

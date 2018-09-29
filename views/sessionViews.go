@@ -59,7 +59,7 @@ func LoginFunc(w http.ResponseWriter, r *http.Request) {
 
 		sess.Set("loggedin", "true")
 		sess.Set("username", username)
-		log.Print("Connected, session: ", sess.SessionID(), sess.Get("loggedin"))
+		log.Print("Connected, session: ", sess.SessionID())
 
 		if dbname == "" {
 			http.Redirect(w, r, "/dbselect", 302)

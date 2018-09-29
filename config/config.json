@@ -1,7 +1,8 @@
 {
-	"ServerPort": ":8081",
-	"Wait": "time.Second * 30",
-	"WriteTimeout": "time.Second * 30",
-	"ReadTimeout":  "time.Second * 30",
-	"IdleTimeout":  "time.Minute * 60"
+	"SrvServerPort": ":8081",
+	"SrvWait": "time.Second * 90",
+	"SrvWriteTimeout": "time.Second * 30",
+	"SrvReadTimeout":  "time.Second * 30",
+	"SrvIdleTimeout":  "time.Second * 90",
+	"SessGclifetime": 1200
 }
