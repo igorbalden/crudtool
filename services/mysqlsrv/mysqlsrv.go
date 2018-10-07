@@ -2,15 +2,11 @@ package mysqlsrv
 
 import (
 	"database/sql"
-	"fmt"
-	"github.com/gorilla/mux"
 	"log"
-	"strings"
 	// Mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/igorbalden/crudtool/services/ibsession"
 	"net/http"
-	"strconv"
 )
 
 var err error
@@ -23,27 +19,10 @@ type Mysqlconn struct {
 
 //DbData passes data to views
 type DbData struct {
-	Pagnt    Pgn
-	ColNames []string
-	ShData   [][]string
+	Totalrows *int
+	ColNames  []string
+	ShData    [][]string
 }
-
-//Pgn passes pagination data to views
-type Pgn struct {
-	PgURL   string
-	RwsTot  int
-	PgCurr  int
-	PgLast  int
-	PgPrev  int
-	PgNext  int
-	PgOne   int
-	PgTwo   int
-	PgThree int
-	PgFour  int
-	PgFive  int
-}
-
-const limitQry = 20
 
 func init() {
 }
@@ -107,63 +86,4 @@ func (*Mysqlconn) MakeConnection(w http.ResponseWriter, r *http.Request, dbname 
 	}
 
 	return err
-}
-
-//GetPagnt sets StartRow, and Limit, variables for DB query, from request parameters
-//Not in use anymore. GetPagntStr is more useful
-func GetPagnt(r *http.Request) (StartRow int, Limit int) {
-	Limit = limitQry
-	page := 1
-	vars := mux.Vars(r)
-	curPg, _ := strconv.Atoi(vars["p"])
-	if curPg != 0 {
-		page = curPg
-	}
-	StartRow = Limit * (page - 1)
-	return StartRow, Limit
-}
-
-//GetPagntStr sets the Limit portion for DB query.
-func GetPagntStr(r *http.Request) string {
-	limit := limitQry
-	page := 1
-	vars := mux.Vars(r)
-	curPg, _ := strconv.Atoi(vars["p"])
-	if curPg != 0 {
-		page = curPg
-	}
-	startRow := limit * (page - 1)
-	return " LIMIT " + fmt.Sprintf("%d", startRow) + ", " + fmt.Sprintf("%d", limit)
-}
-
-//SetPagnt sets current page, and total pages, numbers for the pagination template
-func SetPagnt(r *http.Request, FchData *DbData) {
-	Limit := limitQry
-	page := 1
-	vars := mux.Vars(r)
-	curPg, _ := strconv.Atoi(vars["p"])
-	if curPg != 0 {
-		page = curPg
-	}
-	ptot := FchData.Pagnt.RwsTot / Limit
-	if FchData.Pagnt.RwsTot%Limit > 0 {
-		ptot++
-	}
-	url := r.RequestURI
-	if strings.Index(url, "/p/") > -1 {
-		FchData.Pagnt.PgURL = url[:strings.Index(url, "/p/")]
-	} else {
-		FchData.Pagnt.PgURL = url
-	}
-
-	FchData.Pagnt.PgCurr = page
-	FchData.Pagnt.PgPrev = page - 1
-	FchData.Pagnt.PgNext = page + 1
-	FchData.Pagnt.PgOne = page - 2
-	FchData.Pagnt.PgTwo = page - 1
-	FchData.Pagnt.PgThree = page
-	FchData.Pagnt.PgFour = page + 1
-	FchData.Pagnt.PgFive = page + 2
-	FchData.Pagnt.PgLast = ptot
-	return
 }

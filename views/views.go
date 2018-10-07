@@ -3,12 +3,14 @@ package views
 import (
 	"github.com/gorilla/mux"
 	"github.com/igorbalden/crudtool/services/mysqlsrv"
+	"github.com/igorbalden/crudtool/services/pagination"
 	"github.com/igorbalden/crudtool/utils"
+
+	"log"
+	"net/http"
 
 	//no new variables
 	_ "github.com/go-sql-driver/mysql"
-	"log"
-	"net/http"
 )
 
 //DbSelect shows the databases list
@@ -27,7 +29,7 @@ func DbSelect(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		myDt := mysqlsrv.GetMyData(w, r)
-		viewData["Pagnt"] = myDt.Pagnt
+		viewData["Pagnt"] = pagination.SetPagnt(r, *myDt.Totalrows)
 		viewData["ColNames"] = myDt.ColNames
 		viewData["ShData"] = myDt.ShData
 		dbSelectTemplate.Execute(w, viewData)
@@ -50,7 +52,7 @@ func ListTables(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		myDt := mysqlsrv.GetMyData(w, r)
-		viewData["Pagnt"] = myDt.Pagnt
+		viewData["Pagnt"] = pagination.SetPagnt(r, *myDt.Totalrows)
 		viewData["ColNames"] = myDt.ColNames
 		viewData["ShData"] = myDt.ShData
 		viewData["dbname"] = vars["dbname"]
@@ -75,7 +77,7 @@ func TblContent(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		myDt := mysqlsrv.GetMyData(w, r)
-		viewData["Pagnt"] = myDt.Pagnt
+		viewData["Pagnt"] = pagination.SetPagnt(r, *myDt.Totalrows)
 		viewData["ColNames"] = myDt.ColNames
 		viewData["ShData"] = myDt.ShData
 		viewData["dbname"] = vars["dbname"]

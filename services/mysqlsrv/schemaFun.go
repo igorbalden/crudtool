@@ -6,6 +6,7 @@ import (
 	// Mysql driver
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/igorbalden/crudtool/services/pagination"
 	"net/http"
 )
 
@@ -20,7 +21,7 @@ func (*Mysqlconn) GetDBs(w http.ResponseWriter, r *http.Request) error {
 	qDt := new(qryDetails)
 	qDt.dbNm = "information_schema"
 	qDt.qryCnt = "SELECT COUNT(*) as count FROM schemata"
-	qDt.qry = "SELECT * FROM schemata" + GetPagntStr(r)
+	qDt.qry = "SELECT * FROM schemata" + pagination.GetPagntStr(r)
 
 	return makeList(w, r, qDt)
 }
@@ -32,7 +33,7 @@ func (*Mysqlconn) ListDB(w http.ResponseWriter, r *http.Request) error {
 	qDt := new(qryDetails)
 	qDt.dbNm = dbname
 	qDt.qryCnt = "SELECT COUNT(*) as count FROM information_schema.tables WHERE tables.table_schema = '" + dbname + "'"
-	qDt.qry = "SELECT * FROM information_schema.tables WHERE tables.table_schema = '" + dbname + "' " + GetPagntStr(r)
+	qDt.qry = "SELECT * FROM information_schema.tables WHERE tables.table_schema = '" + dbname + "' " + pagination.GetPagntStr(r)
 
 	return makeList(w, r, qDt)
 }
@@ -45,7 +46,7 @@ func (*Mysqlconn) TblCont(w http.ResponseWriter, r *http.Request) error {
 	qDt := new(qryDetails)
 	qDt.dbNm = dbname
 	qDt.qryCnt = "SELECT COUNT(*) as count FROM `" + dbname + "`.`" + dbtable + "`"
-	qDt.qry = "SELECT * FROM `" + dbname + "`.`" + dbtable + "` " + GetPagntStr(r)
+	qDt.qry = "SELECT * FROM `" + dbname + "`.`" + dbtable + "` " + pagination.GetPagntStr(r)
 	return makeList(w, r, qDt)
 }
 
@@ -55,12 +56,12 @@ func makeList(w http.ResponseWriter, r *http.Request, qDt *qryDetails) error {
 	FchData := NewMyData(w, r)
 	//Get DATA COUNT for pagination
 	rowsC := pConn.DB.QueryRow(qDt.qryCnt)
-	err := rowsC.Scan(&FchData.Pagnt.RwsTot)
+	err := rowsC.Scan(&FchData.Totalrows)
 	if err != nil {
 		log.Print(err)
 		return err
 	}
-	SetPagnt(r, FchData)
+	pagination.SetPagnt(r, *FchData.Totalrows)
 
 	//Get DATA
 	rows, err := pConn.DB.Query(qDt.qry)
