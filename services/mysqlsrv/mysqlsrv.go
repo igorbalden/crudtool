@@ -27,7 +27,7 @@ type DbData struct {
 func init() {
 }
 
-//GetMyConn get the DB Coneection for this session
+//GetMyConn get the DB Connection for this session
 func GetMyConn(w http.ResponseWriter, r *http.Request) *Mysqlconn {
 	sess, _ := ibsession.GetSession(w, r)
 	if value, ok := sess.Get("MyConn").(*Mysqlconn); ok {

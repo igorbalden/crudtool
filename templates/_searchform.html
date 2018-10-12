@@ -1,43 +1,33 @@
 
+{{define "opsBlck"}}
+<option>SQL</option>
+{{end}}
+
 <div class="col-xs-12">
 <form action="" method="get" id="searchf">
-    <table class="table table-condensed table-responsive table-hover">
+    <table class="table table-striped table-condensed table-responsive table-hover">
         <thead>
             <tr class="info">
-                <td><span><strong>Column Name</strong></span></td><td>Type</td><td>Collation</td>
+                <th><span><strong>Column </strong></span></th><th>Type</th><th>Collation</th>
+                <th>Operator</th><th>Value</th>
             </tr>
         </thead>
 
         <tbody>
-
-        <tr class="active">
-            <td><span><strong>Username</strong></span></td><td>varchar(64)</td><td>utf8_general_ci</td>
+        {{range $mtv := .MetaDt.ShData}}
+        <tr class="">
+            {{$vm0 := ""}}{{$vm1 := ""}}{{$vm2 := ""}}
+            {{range $idx, $vm := $mtv}}
+            {{if (eq $idx 0)}}{{$vm0 = $vm}}{{end}}
+            {{if (eq $idx 1)}}{{$vm1 = $vm}}{{end}}
+            {{if (eq $idx 2)}}{{$vm2 = $vm}}{{end}}
+            {{end}}
+            <td><span>{{$vm0}}</span></td><td>{{$vm1}}</td><td>{{$vm2}}</td>
+            <td><select class="" name="op_{{$vm0}}">{{template "opsBlck"}}</select></td>
+            <td><input class="" name="{{$vm0}}" type="text"></td>
         </tr>
-        <tr>
-            <td colspan="3">
-                <input class="col-xs-12" name="inpname1" type="text">
-            </td>
-        </tr>
-
-        <tr class="active">
-            <td><span><strong>Username</strong></span></td><td>varchar(64)</td><td>utf8_general_ci</td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <input class="col-xs-12" name="inpname2" type="text">
-            </td>
-        </tr>
-
-        <tr class="active">
-            <td><span><strong>Username</strong></span></td><td>varchar(64)</td><td>utf8_general_ci</td>
-        </tr>
-        <tr>
-            <td colspan="3">
-                <input class="col-xs-12" name="inpname3" type="text">
-            </td>
-        </tr>
-
-        </tbody>
+        {{end}}
+    </tbody>
     </table>
     <div>
         <input type="submit" value="Submit" class="btn btn-primary" />

@@ -77,6 +77,8 @@ func TblContent(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		myDt := mysqlsrv.GetMyData(w, r)
+		myMetaDt := myConn.GetColmnsMeta(w, r)
+		viewData["MetaDt"] = myMetaDt
 		viewData["Pagnt"] = pagination.SetPagnt(r, *myDt.Totalrows)
 		viewData["ColNames"] = myDt.ColNames
 		viewData["ShData"] = myDt.ShData
