@@ -24,7 +24,7 @@ func DbSelect(w http.ResponseWriter, r *http.Request) {
 		err := myConn.GetDBs(w, r)
 		if err != nil {
 			log.Print(err)
-			viewData["Message"] = "Database error."
+			viewData["Message"] = "Database error" + " - " + err.Error()
 			dbSelectTemplate.Execute(w, viewData)
 			return
 		}
@@ -47,7 +47,7 @@ func ListTables(w http.ResponseWriter, r *http.Request) {
 		err := myConn.ListDB(w, r)
 		if err != nil {
 			log.Print(err)
-			viewData["Message"] = "Error opening database " + vars["dbname"]
+			viewData["Message"] = "Error opening database " + vars["dbname"] + " - " + err.Error()
 			tablesTemplate.Execute(w, viewData)
 			return
 		}
@@ -72,11 +72,14 @@ func TblContent(w http.ResponseWriter, r *http.Request) {
 		err := myConn.TblCont(w, r)
 		if err != nil {
 			log.Print(err)
-			viewData["Message"] = "Error opening database " + vars["dbname"]
+			viewData["Message"] = "Error opening database " + vars["dbname"] + " - " + err.Error()
 			tablesTemplate.Execute(w, viewData)
 			return
 		}
 		myDt := mysqlsrv.GetMyData(w, r)
+		myMetaDt := myConn.GetColmnsMeta(w, r)
+		viewData["MetaDt"] = myMetaDt
+		viewData["SrchVars"] = r.URL.Query()
 		viewData["Pagnt"] = pagination.SetPagnt(r, *myDt.Totalrows)
 		viewData["ColNames"] = myDt.ColNames
 		viewData["ShData"] = myDt.ShData

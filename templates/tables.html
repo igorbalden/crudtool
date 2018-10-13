@@ -12,7 +12,16 @@
         {{end}}
     </h3>
 </div>
-            
+
+{{if eq .Navigation "tblContent"}}
+<div class="panel panel-default">
+    <div class="search-pan-head" id="search-pnl-head" data-toggle="collapse" data-target="#search-pnl-body">Search</div>
+    <div class="panel-body search-pan-body collapse" id="search-pnl-body">
+        {{template "_searchform.html" .}}
+    </div>
+</div>
+{{end}}
+
 {{template "_pagination.html" .}}
 
 <table class="table table-responsive table-hover table-striped table-condensed">
