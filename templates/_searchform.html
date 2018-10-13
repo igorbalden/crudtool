@@ -1,7 +1,6 @@
 
-{{define "opsBlck"}}
-<option>SQL</option>
-{{end}}
+
+{{ $srchVars := .SrchVars }}
 
 <div class="col-xs-12">
 <form action="" method="get" id="searchf">
@@ -16,15 +15,19 @@
         <tbody>
         {{range $mtv := .MetaDt.ShData}}
         <tr class="">
-            {{$vm0 := ""}}{{$vm1 := ""}}{{$vm2 := ""}}
-            {{range $idx, $vm := $mtv}}
-            {{if (eq $idx 0)}}{{$vm0 = $vm}}{{end}}
-            {{if (eq $idx 1)}}{{$vm1 = $vm}}{{end}}
-            {{if (eq $idx 2)}}{{$vm2 = $vm}}{{end}}
-            {{end}}
-            <td><span>{{$vm0}}</span></td><td>{{$vm1}}</td><td>{{$vm2}}</td>
-            <td><select class="" name="op_{{$vm0}}">{{template "opsBlck"}}</select></td>
-            <td><input class="" name="{{$vm0}}" type="text"></td>
+            {{$inpName := index $mtv 0}}
+            {{$selName := printf "op_%s" $inpName}}
+            {{$inpSlc := index $srchVars $inpName}}
+            {{$selSlc := index $srchVars $selName}}
+            {{$selVal := ""}}
+            {{with $selSlc}}{{$selVal = index $selSlc 0}} {{else}} {{$selVal = ""}} {{end}}
+            <td><span>{{$inpName}}</span></td><td>{{index $mtv 1}}</td><td>{{index $mtv 2}}</td>
+            <td><select class="" name="op_{{$inpName}}">
+                <option></option>
+                <option {{if (eq $selVal "SQL")}}selected="selected"{{end}}>SQL</option>
+            </select></td>
+            <td><input class="col-xs-12" name="{{$inpName}}" type="text" 
+                value="{{with $inpSlc}}{{index $inpSlc 0}}{{end}}"></td>
         </tr>
         {{end}}
     </tbody>
@@ -34,3 +37,4 @@
     </div>
 </form>
 </div>
+

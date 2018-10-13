@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	// Mysql driver
+	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/igorbalden/crudtool/services/pagination"
@@ -43,10 +44,33 @@ func (*Mysqlconn) TblCont(w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 	dbname := vars["dbname"]
 	dbtable := vars["dbtable"]
+	// make sql search string
+	whereStr := ""
+	schVars := r.URL.Query()
+	for ink := range schVars {
+		// ink is the operator input name, actually "op_[COLUMN_NAME]"
+		// skey in the search input name, or column name
+		if len(ink) > 2 {
+			skey := ink[3:]
+			if ink[0:3] == "op_" && schVars[skey][0] != "" {
+				if schVars[ink][0] == "" {
+					err := errors.New("Operator not selected. Click the back button")
+					return err
+				}
+				whereStr += " AND " + skey + " " + schVars[skey][0]
+			}
+		}
+	}
+	if whereStr != "" {
+		whereStr = " WHERE " + whereStr[4:]
+	}
+
 	qDt := new(qryDetails)
 	qDt.dbNm = dbname
-	qDt.qryCnt = "SELECT COUNT(*) as count FROM `" + dbname + "`.`" + dbtable + "`"
-	qDt.qry = "SELECT * FROM `" + dbname + "`.`" + dbtable + "` " + pagination.GetPagntStr(r)
+	qDt.qryCnt = "SELECT COUNT(*) as count FROM `" + dbname + "`.`" + dbtable + "` " +
+		whereStr
+	qDt.qry = "SELECT * FROM `" + dbname + "`.`" + dbtable + "` " + whereStr +
+		pagination.GetPagntStr(r)
 	return makeSessList(w, r, qDt)
 }
 
