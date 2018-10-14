@@ -5,7 +5,6 @@ import (
 	"log"
 	// Mysql driver
 	"errors"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/igorbalden/crudtool/services/pagination"
 	"net/http"
@@ -48,11 +47,11 @@ func (*Mysqlconn) TblCont(w http.ResponseWriter, r *http.Request) error {
 	whereStr := ""
 	schVars := r.URL.Query()
 	for ink := range schVars {
-		// ink is the operator input name, actually "op_[COLUMN_NAME]"
+		// ink is the operator input name, actually "___selopertr___[COLUMN_NAME]"
 		// skey in the search input name, or column name
-		if len(ink) > 2 {
-			skey := ink[3:]
-			if ink[0:3] == "op_" && schVars[skey][0] != "" {
+		if len(ink) > 14 {
+			skey := ink[15:]
+			if ink[0:15] == "___selopertr___" && schVars[skey] != nil && schVars[skey][0] != "" {
 				if schVars[ink][0] == "" {
 					err := errors.New("Operator not selected. Click the back button")
 					return err

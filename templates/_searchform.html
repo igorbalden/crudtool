@@ -16,13 +16,13 @@
         {{range $mtv := .MetaDt.ShData}}
         <tr class="">
             {{$inpName := index $mtv 0}}
-            {{$selName := printf "op_%s" $inpName}}
+            {{$selName := printf "___selopertr___%s" $inpName}}
             {{$inpSlc := index $srchVars $inpName}}
             {{$selSlc := index $srchVars $selName}}
             {{$selVal := ""}}
             {{with $selSlc}}{{$selVal = index $selSlc 0}} {{else}} {{$selVal = ""}} {{end}}
             <td><span>{{$inpName}}</span></td><td>{{index $mtv 1}}</td><td>{{index $mtv 2}}</td>
-            <td><select class="" name="op_{{$inpName}}">
+            <td><select class="" name="___selopertr___{{$inpName}}">
                 <option></option>
                 <option {{if (eq $selVal "SQL")}}selected="selected"{{end}}>SQL</option>
             </select></td>
